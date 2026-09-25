@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>送给洋洋同学的祝福 🌸</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #ffd1dc, #ffb7b2);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 30px;
+            padding: 40px 30px;
+            box-shadow: 0 15px 30px rgba(255, 107, 107, 0.25);
+            text-align: center;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
+        }
+        
+        .heart-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.12;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #ff7878;
+            font-size: 26px;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hearts {
+            color: #ff7878;
+            font-size: 24px;
+            margin: 15px 0;
+            letter-spacing: 5px;
+        }
+        
+        .heart-emoji {
+            font-size: 120px;
+            color: #ff7878;
+            margin: 30px 0;
+            text-shadow: 0 5px 10px rgba(255, 107, 107, 0.25);
+            animation: heartbeat 1.5s infinite;
+            z-index: 2;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            max-width: 300px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+            position: relative;
+            z-index: 2;
+        }
+        .progress-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: #ffccd5;
+            border-radius: 10px;
+            width: 0;
+            transition: width 0.3s linear;
+        }
+        .progress-heart {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 0;
+            font-size: 16px;
+            z-index: 3;
+            transition: left 0.3s linear;
+        }
+        
+        .message {
+            font-size: 16px;
+            color: #555;
+            margin: 15px 0;
+            font-family: "KaiTi", sans-serif;
+        }
+        
+        .btn {
+            background: #ff7878;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.35);
+            transition: all 0.3s;
+            width: 100%;
+            max-width: 240px;
+            z-index: 2;
+        }
+        
+        .btn:disabled {
+            background: #ff9aa2;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        
+        .btn:active {
+            transform: scale(0.97);
+            box-shadow: 0 3px 10px rgba(255, 107, 107, 0.3);
+            background: #ff9aa2;
+        }
+        
+        .footer {
+            color: #888;
+            font-size: 12px;
+            margin-top: 15px;
+            font-family: "KaiTi", sans-serif;
+        }
+        
+        .popup-content {
+            width: 85%;
+            max-width: 380px;
+            background: #ffd1dc;
+            border-radius: 20px;
+            padding: 25px;
+            position: fixed;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s;
+            z-index: 1000;
+        }
+        
+        .popup-title {
+            color: #ff7878;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .popup-message {
+            font-size: 17px;
+            color: #333;
+            margin: 20px 0;
+            font-family: "KaiTi", sans-serif;
+            line-height: 1.6;
+        }
+        
+        .popup-close {
+            background: #ff7878;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        
+        .popup-countdown {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            color: #888;
+            font-size: 12px;
+        }
+        
+        .decoration {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.7;
+            z-index: 0;
+        }
+        
+        @keyframes heartBurst {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(3);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes heartFloat {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        .burst-heart {
+            position: absolute;
+            font-size: 24px;
+            z-index: 999;
+            pointer-events: none;
+            animation: heartBurst 0.8s ease-out forwards;
+        }
+        
+        .float-heart {
+            position: absolute;
+            font-size: 16px;
+            z-index: 998;
+            pointer-events: none;
+            opacity: 0;
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+        
+        .floating {
+            animation: float 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="heart-bg">
+            🌸🐱🌼🐰🌷🦋💐🐿️🌸🦊
+            🌷🐶💐🦋🌼🐇🌸🐱🌷🐿️
+            🐰🌼💐🦊🌸🐶🌷🐇🦋🌼
+            💐🐱🌷🐿️🦋🌸🐰🌼🐇🌷
+        </div>
+        
+        <div class="content">
+            <h1>给洋洋的小祝福 🌸</h1>
+            <div class="hearts">🌸 🌼 🐰 🌷 🦋</div>
+            <div class="heart-emoji floating">🌷</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+                <div class="progress-heart" id="progressHeart">🐰</div>
+            </div>
+            <p class="message">正在初始化祝福程序~</p>
+            <button class="btn" id="blessingBtn" disabled>准备中（0）</button>
+            <p class="footer">专属于你的祝福程序</p>
+            <audio id="bgMusic" loop preload="auto">
+                <source src="missyouhani.mp3" type="audio/mpeg">
+                <source src="missyouhani.ogg" type="audio/ogg">
+                您的浏览器不支持音频播放
+            
+        </div>
+    </div>
+    
+    <div class="popup-template" style="display: none;">
+        <div class="popup-content">
+            <div class="decoration" style="top: 10px; left: 15px;">🌸</div>
+            <div class="decoration" style="top: 15px; right: 20px;">🌼</div>
+            <div class="decoration" style="bottom: 40px; left: 20px;">🦋</div>
+            <div class="decoration" style="bottom: 35px; right: 15px;">🐰</div>
+            
+            <div class="popup-title">✨想对洋洋说的悄悄话 ✨</div>
+            <div class="popup-message"></div>
+            <button class="popup-close">🌸 关闭</button>
+            <div class="popup-countdown">⏳ 10秒后关闭</div>
+        </div>
+    </div>
+    <div class="wait-popup-template" style="display: none;">
+        <div class="popup-content wait-popup">
+            <div class="decoration" style="top: 10px; right: 15px;">🌷</div>
+            <div class="popup-title">稍等一下下~</div>
+            <div class="popup-message"></div>
+            <button class="popup-close">知道啦~</button>
+            <div class="popup-countdown">⏳ 4秒后自动关闭</div>
+        </div>
+    </div>
+    
+    <script>
+        const messages = [
+            "希望你不要总委屈自己，该对自己好一点💰",
+            "赚钱也很辛苦，愿你善待自己🧧",
+            "坐车外出一路平安，遇到别的车辆强行加塞，一定要多多当心，尤其是坐叶克彩的车，更要小心了🚗",
+			"你本身就十分温柔，格外珍贵",
+            "坐车的时候别太累犯困，好好留意路况，你的出行平安我会记挂在心上✨",
+            "心里和身体都觉得疲惫时，找个安静的环境好好睡一觉，好好放空自己🛏️",
+            "感觉难受就好好休整，千万不要什么事情都硬扛着😔",
+            "不用什么人情都往自己身上揽，好好守护自己的感受最重要🤍",
+			"上次偷偷叫我小屁孩，可是被我发现了喔😆",
+            "该做好的事尽力就好，不必过度在意旁人的好话与评价🙏",
+            "有些烦恼不必到处诉说，人心复杂，好好保护自己的情绪就好🤫",
+            "面对各种机会放平心态，得到是幸运，落空也不必反复内耗自己😊",
+            "答应别人的事量力而行，不必为了顾及他人勉强自己📝",
+            "心事太多就多停下来复盘梳理，不要一个人反复钻牛角尖💭",
+			"只要你出现，就让人觉得踏实",
+			"你不用急着解释，我愿意相信你",
+			"以后有烦心事，我可以做你的听众一起扛",
+            "很多事情强求不来，顺其自然，放过自己就很好🍃",
+            "请好好照顾自己，一定要爱惜你的身体🌷",
+            "经历过糟心事后别反复回想，尽快平复心情，不要一直陷在后怕与难过里🌧️",
+            "无论何时，你的平安快乐才是第一位✨",
+            "累了就睡个好觉，让疲惫的身心得到好好缓解😴",
+            "与人相处守住自己的分寸，优先保护好自己的情绪💛",
+            "有机会可以努力争取，但也要接受事与愿违，不必苛责自己🌟",
+			"你的笑容特别有感染力，可以温暖身边所有人",
+            "你心思细腻容易多想，很多事不必放在心底反复琢磨🤍",
+            "吃了就是睡，睡了就是玩，玩了就是笑🌸",
+            "记得多心疼你自己，不要总是活得太累太紧绷🍀",
+			"我愿意静静倾听，多久都没关系",
+			"你从来都不是麻烦，是我很在意的姐姐",
+            "心里积攒了烦心事别一个人憋着，难受可以说出来，不要独自消化所有负面情绪☁️",
+            "你本就多愁善感，不要把所有人的情绪都扛在自己肩上，你也可以轻松一点🍂"
+        ];
+        const colors = [
+            "#FFD1DC", "#FFB7B2", "#FFDAC1", "#E2F0CB", "#B5EAD7",
+            "#C7CEEA", "#FF9AA2", "#A7E8BD", "#FFE6B5", "#D4BBFC",
+            "#FFB5C2", "#A0E7E5", "#FFC8A2", "#B4E8E6", "#FFC6D9",
+            "#C5E0D8", "#FFB8C6", "#B8DFD8", "#FFD3B6", "#D6EADF"
+        ];
+        const waitPopupTexts = [
+            "系统正在疯狂加载中！已经在猛敲键盘啦，再给我一丢丢时间～",
+            "别急别急！我这就快马加鞭处理，再等亿秒，悄悄话马上到洋洋碗里来！",
+            "哎呀呀，暖心话语正在慢悠悠赶路～ 马上就好，不许催我呀！",
+            "等待是为更好的展示，正在把暖心内容加载中～",
+            "叮！系统已收到洋洋的指令，正在全力冲刺处理，稍等片刻！",
+            "报告洋洋！加载进度条正在奋力奔跑，再给它点时间，马上完成使命～",
+            "咱就是说！正在偷偷给你打包悄悄话，加载慢是因为塞了很多心意~ 再等等哈😜",
+            "施法刚给代码加了个小花buff，加载会慢一丢丢，但心意直接拉满🥹",
+            "加载进度条正在摸鱼吃零食！我已经催它啦，马上揣着暖心话跑过来🤣",
+            "别催别催~ 系统正在给你的悄悄话镀上亮晶晶的糖衣，这步慢但超好看✨",
+            "报告洋洋长官！加载队列排了一堆小花，我正在挨个给它们贴“专属”标签~ 马上好😎",
+            "数据小弟说它想给洋洋整个惊喜，现在在翻暖心库存找最贴心的那条，稍等亿下下~",
+            "刚把代码里的“普通加载”换成了“鲜花加载”，速度慢但仪式感拉满~",
+            "加载ing！其实是我在偷偷往里面塞内容，再等亿秒就能收到双倍温暖啦🥰",
+            "正在给悄悄话加珍珠奶茶底～ 甜度刚刚好需要慢一点调试，马上送到你嘴边😋",
+            "偷偷抓包！已经加急加载，悄悄话亿秒内到账🎮",
+            "把悄悄话和零食搞混啦～ 正在分拣暖心款，不含卡路里请放心😝",
+            "暖心小分队迷路啦！正在用小花导航定位洋洋，再等一丢丢就到📍",
+            "进度条在撒娇求摸摸～ 摸完它就飞快跑过来，给你满满悄悄话🥰",
+            "正在把悄悄话加热到37℃（温柔适配）～ 适配洋洋小盆友的胃口，马上好🌡️",
+            "洋盆友别急！我要检查有没有漏了暖心话，如果不够贴心就要返工，再等亿秒就好🍯"
+        ];
+        const floatEmojisPool = ["🌸","🌼","🐱","🐰","🌷","🦋","💐","🐿️","🐶","🦊","🐇","🌺"];
+        const burstEmojisPool = ["🌸","🐰","🌷","🦋","🌼"];
+        const blessingBtn = document.getElementById('blessingBtn');
+        const bgMusic = document.getElementById('bgMusic');
+        const progressFill = document.getElementById('progressFill');
+        const progressHeart = document.getElementById('progressHeart');
+        const progressBar = document.querySelector('.progress-bar');
+        let interval = null;
+        let musicPlayed = false;
+        let remainingMessages = [...messages];
+        let musicPreloaded = false;
+        let waitPopupTimer = null;
+        let shownWaitTextIndexes = [];
+        let isWaitPopupShowing = false;
+        let smoothProgressTimer = null;
+        let currentPercent = 0;
+        let isBurstAnimated = false;
+        let audioTimeoutTimer = null;
+        let playMonitorTimer = null;
+        let isAudioWaiting = false;
+
+        window.addEventListener('load', function() {
+            initAudioLoad();
+            startWaitPopups();
+            startSmoothProgress();
+            audioTimeoutTimer = setTimeout(() => {
+                forceCompleteLoad();
+            }, 6000);
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+            window.addEventListener('beforeunload', function() {
+                if (playMonitorTimer) clearInterval(playMonitorTimer);
+                if (smoothProgressTimer) clearInterval(smoothProgressTimer);
+                if (audioTimeoutTimer) clearTimeout(audioTimeoutTimer);
+                if(interval) clearInterval(interval);
+                if(waitPopupTimer) clearInterval(waitPopupTimer);
+            });
+        });
+
+        function startSmoothProgress() {
+            smoothProgressTimer = setInterval(() => {
+                if (musicPreloaded || currentPercent >= 100) {
+                    currentPercent = 100;
+                    updateProgressDisplay(currentPercent);
+                    clearInterval(smoothProgressTimer);
+                    triggerHeartBurst();
+                    forceCompleteLoad();
+                    return;
+                }
+                currentPercent += 0.75;
+                currentPercent = Math.min(currentPercent, 98);
+                updateProgressDisplay(currentPercent);
+            }, 50);
+        }
+
+        function initAudioLoad() {
+            bgMusic.addEventListener('canplaythrough', function onCanPlay() {
+                clearTimeout(audioTimeoutTimer);
+                musicPreloaded = true;
+                completePreload();
+                bgMusic.removeEventListener('canplaythrough', onCanPlay);
+            });
+
+            bgMusic.addEventListener('error', function() {
+                clearTimeout(audioTimeoutTimer);
+                musicPreloaded = true;
+                forceCompleteLoad();
+                alert('音频文件加载失败！微信打开建议点右上角在浏览器打开 ❀');
+            });
+
+            bgMusic.addEventListener('waiting', function() {
+                isAudioWaiting = true;
+            });
+            bgMusic.addEventListener('playing', function() {
+                isAudioWaiting = false;
+            });
+
+            bgMusic.addEventListener('ended', function() {
+                musicPlayed = false;
+                blessingBtn.disabled = false;
+                blessingBtn.textContent = "再次播放音乐+接收祝福";
+            });
+        }
+
+        function completePreload() {
+            clearInterval(waitPopupTimer);
+            blessingBtn.disabled = false;
+            blessingBtn.textContent = "点击接收祝福+播放音乐";
+            const activeWaitPopup = document.querySelector('.wait-popup');
+            if (activeWaitPopup) {
+                isWaitPopupShowing = false;
+                closePopup(activeWaitPopup);
+            }
+        }
+
+        function forceCompleteLoad() {
+            if (musicPreloaded) return;
+            clearInterval(waitPopupTimer);
+            clearTimeout(audioTimeoutTimer);
+            musicPreloaded = true;
+            blessingBtn.disabled = false;
+            blessingBtn.textContent = bgMusic.readyState >= 2 ? "点击接收祝福+播放音乐" : "点击接收祝福（无音乐）";
+            const activeWaitPopup = document.querySelector('.wait-popup');
+            if (activeWaitPopup) {
+                isWaitPopupShowing = false;
+                closePopup(activeWaitPopup);
+            }
+        }
+
+        function updateProgressDisplay(percent) {
+            const displayPercent = Math.floor(percent);
+            progressFill.style.width = `${percent}%`;
+            progressHeart.style.left = `${percent}%`;
+            blessingBtn.textContent = `准备中（${displayPercent}）`;
+            if (displayPercent === 100 && !isBurstAnimated) {
+                triggerHeartBurst();
+                isBurstAnimated = true;
+            }
+        }
+
+        function triggerHeartBurst() {
+            const progressBarRect = progressBar.getBoundingClientRect();
+            const burstX = progressBarRect.left + progressBarRect.width / 2;
+            const burstY = progressBarRect.top + progressBarRect.height / 2;
+            for (let i = 0; i < 3; i++) {
+                const burstHeart = document.createElement('div');
+                burstHeart.className = 'burst-heart';
+                burstHeart.textContent = burstEmojisPool[Math.floor(Math.random()*burstEmojisPool.length)];
+                burstHeart.style.left = `${burstX}px`;
+                burstHeart.style.top = `${burstY}px`;
+                burstHeart.style.animationDelay = `${i * 0.2}s`;
+                document.body.appendChild(burstHeart);
+                setTimeout(() => {
+                    if (document.body.contains(burstHeart)) {
+                        document.body.removeChild(burstHeart);
+                    }
+                }, 800);
+            }
+            setTimeout(() => {
+                for (let i = 0; i < 20; i++) {
+                    createFloatHeart();
+                }
+            }, 300);
+        }
+
+        function createFloatHeart() {
+            const floatHeart = document.createElement('div');
+            floatHeart.className = 'float-heart';
+            floatHeart.textContent = floatEmojisPool[Math.floor(Math.random()*floatEmojisPool.length)];
+            const viewWidth = document.documentElement.clientWidth;
+            const viewHeight = document.documentElement.clientHeight;
+            const randomX = Math.floor(Math.random() * viewWidth);
+            const randomSize = Math.floor(Math.random() * 12) + 8;
+            const randomDelay = Math.floor(Math.random() * 3) + 0.5;
+            const randomDuration = Math.floor(Math.random() * 8) + 6;
+            const randomRotate = Math.floor(Math.random() * 360);
+            floatHeart.style.left = `${randomX}px`;
+            floatHeart.style.bottom = `0px`;
+            floatHeart.style.fontSize = `${randomSize}px`;
+            floatHeart.style.animation = `heartFloat ${randomDuration}s ease-in-out ${randomDelay}s forwards`;
+            floatHeart.style.transform = `rotate(${randomRotate}deg)`;
+            document.body.appendChild(floatHeart);
+            setTimeout(() => {
+                if (document.body.contains(floatHeart)) {
+                    document.body.removeChild(floatHeart);
+                }
+            }, (randomDelay + randomDuration) * 1000);
+        }
+
+        function startBlessings() {
+            if (!musicPlayed) {
+                if (bgMusic.readyState >= 2) {
+                    startAudioPlay();
+                } else {
+                    bgMusic.addEventListener('canplay', function onPlayReady() {
+                        startAudioPlay();
+                        bgMusic.removeEventListener('canplay', onPlayReady);
+                    });
+                }
+                musicPlayed = true;
+            }
+            let isSecondRound = false;
+            // 初始只弹出3个，减少一开始轰炸
+            for (let i = 0; i < 3 && remainingMessages.length > 0; i++) {
+                createRandomBlessing();
+            }
+            // === 修改这里：间隔4000毫秒（4秒），每次最多弹出1~2个，速度变慢 ===
+            interval = setInterval(() => {
+                if (remainingMessages.length === 0) {
+                    if (!isSecondRound) {
+                        isSecondRound = true;
+                        remainingMessages = [...messages];
+                        for (let i = 0; i < 3; i++) {
+                            createRandomBlessing();
+                        }
+                        return;
+                    } else {
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            blessingBtn.disabled = false;
+                            blessingBtn.textContent = "再次接收祝福（音乐继续播放）";
+                            remainingMessages = [...messages];
+                        }, 500);
+                        return;
+                    }
+                }
+                const maxPopup = Math.min(Math.floor(Math.random() * 2) + 1, remainingMessages.length);
+                for (let i = 0; i < maxPopup; i++) {
+                    createRandomBlessing();
+                }
+            }, 4000);
+
+            blessingBtn.disabled = true;
+            blessingBtn.textContent = "加载中...🎵";
+        }
+
+        function startAudioPlay() {
+            bgMusic.play().catch(err => {
+                alert('微信浏览器音频限制！建议点右上角，在浏览器打开体验完整音乐~');
+                blessingBtn.disabled = false;
+                blessingBtn.textContent = "点击接收祝福+播放音乐";
+                musicPlayed = false;
+            });
+            playMonitorTimer = setInterval(() => {
+                if (bgMusic.volume === 0) bgMusic.volume = 1;
+            }, 1000);
+        }
+
+        function handleVisibilityChange() {
+            if (musicPlayed && !document.hidden && bgMusic.paused && !bgMusic.ended && !isAudioWaiting) {
+                bgMusic.play().catch(()=>{});
+            }
+        }
+
+        function createRandomBlessing() {
+            if (remainingMessages.length === 0) return;
+            const template = document.querySelector('.popup-template');
+            const templatePopup = template.querySelector('.popup-content');
+            const popup = templatePopup.cloneNode(true);
+            const randomMsgIndex = Math.floor(Math.random() * remainingMessages.length);
+            const selectedMsg = remainingMessages.splice(randomMsgIndex, 1)[0];
+            const randomColorIndex = Math.floor(Math.random() * colors.length);
+            popup.querySelector('.popup-message').textContent = selectedMsg;
+            popup.style.backgroundColor = colors[randomColorIndex];
+            document.body.appendChild(popup);
+            setTimeout(() => {
+                const popupRect = popup.getBoundingClientRect();
+                const popupWidth = popupRect.width;
+                const popupHeight = popupRect.height;
+                const viewWidth = document.documentElement.clientWidth;
+                const viewHeight = document.documentElement.clientHeight;
+                const maxTop = Math.max(0, viewHeight - popupHeight);
+                const maxLeft = Math.max(0, viewWidth - popupWidth);
+                const top = Math.floor(Math.random() * maxTop) + 'px';
+                const left = Math.floor(Math.random() * maxLeft) + 'px';
+                popup.style.top = top;
+                popup.style.left = left;
+                popup.style.opacity = '1';
+                popup.style.transform = 'translateY(0)';
+            }, 0);
+            const closeBtn = popup.querySelector('.popup-close');
+            closeBtn.addEventListener('click', () => {
+                closePopup(popup);
+            });
+            let remainingTime = 8;
+            const countdown = popup.querySelector('.popup-countdown');
+            const countdownTimer = setInterval(() => {
+                remainingTime--;
+                countdown.textContent = `⏳ ${remainingTime}秒后关闭`;
+                if (remainingTime <= 0) {
+                    clearInterval(countdownTimer);
+                    closePopup(popup);
+                }
+            }, 1000);
+        }
+
+        function createWaitPopup() {
+            const template = document.querySelector('.wait-popup-template');
+            const templatePopup = template.querySelector('.popup-content');
+            const popup = templatePopup.cloneNode(true);
+            let randomIndex;
+            if (shownWaitTextIndexes.length === waitPopupTexts.length) shownWaitTextIndexes = [];
+            do {
+                randomIndex = Math.floor(Math.random() * waitPopupTexts.length);
+            } while (shownWaitTextIndexes.includes(randomIndex));
+            shownWaitTextIndexes.push(randomIndex);
+            const randomText = waitPopupTexts[randomIndex];
+            popup.querySelector('.popup-message').textContent = randomText;
+            document.body.appendChild(popup);
+            setTimeout(() => {
+                isWaitPopupShowing = true;
+                const popupRect = popup.getBoundingClientRect();
+                const popupWidth = popupRect.width;
+                const popupHeight = popupRect.height;
+                const viewWidth = document.documentElement.clientWidth;
+                const viewHeight = document.documentElement.clientHeight;
+                const maxTop = Math.max(0, viewHeight - popupHeight);
+                const maxLeft = Math.max(0, viewWidth - popupWidth);
+                const top = Math.floor(Math.random() * maxTop) + 'px';
+                const left = Math.floor(Math.random() * maxLeft) + 'px';
+                popup.style.top = top;
+                popup.style.left = left;
+                popup.style.opacity = '1';
+                popup.style.transform = 'translateY(0)';
+            }, 0);
+            const closeBtn = popup.querySelector('.popup-close');
+            closeBtn.addEventListener('click', () => {
+                isWaitPopupShowing = false;
+                closePopup(popup);
+            });
+            let remainingTime = 3;
+            const countdown = popup.querySelector('.popup-countdown');
+            const countdownTimer = setInterval(() => {
+                remainingTime--;
+                countdown.textContent = `⏳ ${remainingTime}秒后自动关闭`;
+                if (remainingTime <= 0 || musicPreloaded) {
+                    clearInterval(countdownTimer);
+                    isWaitPopupShowing = false;
+                    closePopup(popup);
+                }
+            }, 1000);
+        }
+
+        function closePopup(popup) {
+            popup.style.opacity = '0';
+            popup.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                if (document.body.contains(popup)) {
+                    document.body.removeChild(popup);
+                }
+            }, 300);
+        }
+
+        function startWaitPopups() {
+            waitPopupTimer = setInterval(() => {
+                if (musicPreloaded) {
+                    clearInterval(waitPopupTimer);
+                    return;
+                }
+                if (!isWaitPopupShowing) createWaitPopup();
+            }, 8000);
+        }
+
+        blessingBtn.addEventListener('click', function() {
+            if (blessingBtn.disabled) return;
+            blessingBtn.disabled = true;
+            blessingBtn.textContent = "加载中...🎵";
+            startBlessings();
+        });
+    </script>
+</body>
+</html>
