@@ -97,7 +97,6 @@
         .ring-6 { bottom: 30%; left: -18px; animation-delay: 2s; }
         .ring-7 { top: 38%; left: -24px; animation-delay: 2.4s; }
         .ring-8 { top: 14%; left: -18px; animation-delay: 2.8s; }
-
         @keyframes ringFloat {
             0%, 100% {
                 transform: translateY(0) scale(1);
@@ -154,7 +153,7 @@
             font-size:17px;
             font-weight: bold;
             cursor: pointer;
-            margin:14px 0;
+            margin:14px 0 8px;
             box-shadow: 0 5px 15px rgba(255, 107, 107, 0.25);
             transition: all 0.3s;
             width: 100%;
@@ -171,10 +170,28 @@
             box-shadow: 0 3px 10px rgba(255, 107, 107, 0.3);
             background: #ff9aa2;
         }
+        /*音乐控制按钮样式*/
+        .music-toggle-btn{
+            background:#ffb2bc;
+            color:#ffffff;
+            border:none;
+            border-radius:25px;
+            padding:9px 26px;
+            font-size:15px;
+            cursor:pointer;
+            max-width:190px;
+            width:100%;
+            z-index:2;
+            transition:0.3s;
+            box-shadow:0 4px 12px rgba(255,130,145,0.2);
+        }
+        .music-toggle-btn:active{
+            transform:scale(0.96);
+        }
         .footer {
             color: #888;
             font-size:12px;
-            margin-top:8px;
+            margin-top:12px;
             font-family: "KaiTi", sans-serif;
         }
         .popup-content {
@@ -327,6 +344,8 @@
             </div>
             <p class="message">正在初始化祝福程序~</p>
             <button class="btn" id="blessingBtn" disabled>准备中（0）</button>
+            <!--新增音乐暂停播放切换按钮-->
+            <button class="music-toggle-btn" id="musicToggleBtn">🔇音乐尚未播放</button>
             <p class="footer">专属于你的祝福程序</p>
             <audio id="bgMusic" loop preload="auto">
                 <source src="missyouhani.mp3" type="audio/mpeg">
@@ -374,12 +393,29 @@
         let spectrumData = null;
         let beatScale = 1.0;
         const smoothFactor = 0.08;
+        //音乐切换按钮
+        const musicToggleBtn = document.getElementById("musicToggleBtn");
+
         //外圈小花环更新缩放函数
         function updateRingScale(scaleVal){
             const icons = document.querySelectorAll('.ring-icon');
             icons.forEach(el=>{
                 el.style.transform = `scale(${scaleVal})`;
             })
+        }
+        //音乐按钮切换逻辑
+        function toggleMusicPlayPause(){
+            const audioDom = document.getElementById('bgMusic');
+            if(!musicPlayed){
+                return;
+            }
+            if(audioDom.paused){
+                audioDom.play();
+                musicToggleBtn.innerText = "🔊暂停背景音乐";
+            }else{
+                audioDom.pause();
+                musicToggleBtn.innerText = "🔈继续背景音乐";
+            }
         }
         class Particle{
             constructor(){
@@ -577,6 +613,10 @@
         let audioTimeoutTimer = null;
         let playMonitorTimer = null;
         let isAudioWaiting = false;
+
+        //绑定音乐切换按钮点击事件
+        musicToggleBtn.addEventListener("click",toggleMusicPlayPause);
+
         window.addEventListener('load', function() {
             initAudioLoad();
             startWaitPopups();
@@ -627,11 +667,13 @@
             });
             bgMusic.addEventListener('playing', function() {
                 isAudioWaiting = false;
+                musicToggleBtn.innerText = "🔊暂停背景音乐";
             });
             bgMusic.addEventListener('ended', function() {
                 musicPlayed = false;
                 blessingBtn.disabled = false;
                 blessingBtn.textContent = "再次播放音乐+接收祝福";
+                musicToggleBtn.innerText = "🔇音乐尚未播放";
             });
         }
         function completePreload() {
@@ -777,6 +819,7 @@
             playMonitorTimer = setInterval(() => {
                 if (bgMusic.volume === 0) bgMusic.volume = 1;
             }, 1000);
+            musicToggleBtn.innerText = "🔊暂停背景音乐";
         }
         function handleVisibilityChange() {
             if (musicPlayed && !document.hidden && bgMusic.paused && !bgMusic.ended && !isAudioWaiting) {
