@@ -101,7 +101,6 @@
         .ring-8 { top: 14%; left: -18px; animation-delay: 2.8s; }
         .ring-9 { top: 8%; left: 34%; animation-delay: 3.2s; }
         .ring-10 { bottom: 8%; right: 34%; animation-delay: 3.6s; }
-
         @keyframes ringFloat {
             0%, 100% {
                 transform: translateY(0) scale(1);
@@ -325,7 +324,6 @@
                     <span class="ring-icon ring-8">⭐</span>
                 </div>
             </div>
-
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
                 <div class="progress-heart" id="progressHeart">🐰</div>
@@ -372,7 +370,6 @@
         let time = 0;
         let bloomProgress = 0;
         let particles = [];
-
         //音频分析全局
         let audioCtx = null;
         let analyser = null;
@@ -380,7 +377,6 @@
         let spectrumData = null;
         let beatScale = 1.0;
         const smoothFactor = 0.08;
-
         //外圈小花环更新缩放函数
         function updateRingScale(scaleVal){
             const icons = document.querySelectorAll('.ring-icon');
@@ -388,7 +384,6 @@
                 el.style.transform = `scale(${scaleVal})`;
             })
         }
-
         class Particle{
             constructor(){
                 this.x = 170 + (Math.random()-0.5)*100;
@@ -414,19 +409,16 @@
                 ctx.globalAlpha=1;
             }
         }
-
         //花瓣：多层粉色渐变，增加边缘高光
         function drawPetal(cx, cy, angle, len){
             ctx.save();
             ctx.translate(cx, cy);
             ctx.rotate(angle);
-
             ctx.beginPath();
             ctx.moveTo(0, 0);
             ctx.quadraticCurveTo(len * 0.32, -len * 0.72, 0, -len);
             ctx.quadraticCurveTo(-len * 0.32, -len * 0.72, 0, 0);
             ctx.closePath();
-
             //根部桃粉，中部浅粉，尖端淡粉白
             const grad = ctx.createLinearGradient(0, 0, 0, -len);
             grad.addColorStop(0, "rgba(255, 182, 193, 0.88)");
@@ -434,22 +426,18 @@
             grad.addColorStop(1, "rgba(255, 243, 246, 0.62)");
             ctx.fillStyle = grad;
             ctx.fill();
-
             //花瓣边缘高光
             ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
             ctx.lineWidth = 0.6;
             ctx.stroke();
-
             ctx.restore();
         }
-
         function drawLotusBloom(){
             ctx.clearRect(0,0,canvas.width,canvas.height);
             time +=0.024;
             if(bloomProgress<1) bloomProgress +=0.0038;
             const cx = 170;
             const cy = 170;
-
             //音频频谱计算缩放
             let targetScale = 1.0;
             if(analyser && spectrumData){
@@ -461,12 +449,10 @@
             }
             beatScale += (targetScale - beatScale) * smoothFactor;
             updateRingScale(beatScale);
-
             ctx.save();
             ctx.translate(cx,cy);
             ctx.scale(beatScale,beatScale);
             ctx.translate(-cx,-cy);
-
             const petalCount =16;
             const maxLen =112 * bloomProgress;
             for(let i=0;i<petalCount;i++){
@@ -483,9 +469,7 @@
             ctx.arc(cx,cy,42*pulseScale*bloomProgress,0,Math.PI*2);
             ctx.fillStyle=gradCore;
             ctx.fill();
-
             ctx.restore();
-
             //飘散细小光点粒子（粒子不受缩放）
             if(bloomProgress>0.32 && Math.random()>0.62){
                 particles.push(new Particle());
@@ -499,7 +483,6 @@
             requestAnimationFrame(drawLotusBloom);
         }
         drawLotusBloom();
-
         //初始化音频分析器（点击播放时调用）
         function initAudioAnalyser(){
             const audioDom = document.getElementById('bgMusic');
@@ -513,7 +496,6 @@
             sourceNode.connect(analyser);
             analyser.connect(audioCtx.destination);
         }
-
         // ============【花朵绘制结束；下面保留原有整套祝福业务逻辑】============
         const messages = [
             "希望你不要总委屈自己，该对自己好一点💰",
@@ -598,8 +580,6 @@
         let audioTimeoutTimer = null;
         let playMonitorTimer = null;
         let isAudioWaiting = false;
-
-
         window.addEventListener('load', function() {
             initAudioLoad();
             startWaitPopups();
@@ -616,8 +596,6 @@
                 if(waitPopupTimer) clearInterval(waitPopupTimer);
             });
         });
-
-
         function startSmoothProgress() {
             smoothProgressTimer = setInterval(() => {
                 if (musicPreloaded || currentPercent >= 100) {
@@ -633,8 +611,6 @@
                 updateProgressDisplay(currentPercent);
             }, 50);
         }
-
-
         function initAudioLoad() {
             bgMusic.addEventListener('canplaythrough', function onCanPlay() {
                 clearTimeout(audioTimeoutTimer);
@@ -660,8 +636,6 @@
                 blessingBtn.textContent = "再次播放音乐+接收祝福";
             });
         }
-
-
         function completePreload() {
             clearInterval(waitPopupTimer);
             blessingBtn.disabled = false;
@@ -672,8 +646,6 @@
                 closePopup(activeWaitPopup);
             }
         }
-
-
         function forceCompleteLoad() {
             if (musicPreloaded) return;
             clearInterval(waitPopupTimer);
@@ -687,8 +659,6 @@
                 closePopup(activeWaitPopup);
             }
         }
-
-
         function updateProgressDisplay(percent) {
             const displayPercent = Math.floor(percent);
             progressFill.style.width = `${percent}%`;
@@ -699,8 +669,6 @@
                 isBurstAnimated = true;
             }
         }
-
-
         function triggerHeartBurst() {
             const progressBarRect = progressBar.getBoundingClientRect();
             const burstX = progressBarRect.left + progressBarRect.width / 2;
@@ -725,8 +693,6 @@
                 }
             }, 300);
         }
-
-
         function createFloatHeart() {
             const floatHeart = document.createElement('div');
             floatHeart.className = 'float-heart';
@@ -750,8 +716,6 @@
                 }
             }, (randomDelay + randomDuration) * 1000);
         }
-
-
         function startBlessings() {
             if (!musicPlayed) {
                 if (bgMusic.readyState >= 2) {
@@ -788,6 +752,12 @@
                             overlayDom.style.display = 'flex';
                             setTimeout(()=>{
                                 overlayDom.style.display = 'none';
+                                //彩蛋结束自动暂停背景音乐
+                                bgMusic.pause();
+                                if(playMonitorTimer){
+                                    clearInterval(playMonitorTimer);
+                                }
+                                musicPlayed = false;
                             },3000);
                         }, 500);
                         return;
@@ -801,8 +771,6 @@
             blessingBtn.disabled = true;
             blessingBtn.textContent = "加载中...🎵";
         }
-
-
         function startAudioPlay() {
             initAudioAnalyser();
             if(audioCtx && audioCtx.state === 'suspended'){
@@ -818,15 +786,11 @@
                 if (bgMusic.volume === 0) bgMusic.volume = 1;
             }, 1000);
         }
-
-
         function handleVisibilityChange() {
             if (musicPlayed && !document.hidden && bgMusic.paused && !bgMusic.ended && !isAudioWaiting) {
                 bgMusic.play().catch(()=>{});
             }
         }
-
-
         function createRandomBlessing() {
             if (remainingMessages.length === 0) return;
             const template = document.querySelector('.popup-template');
@@ -868,8 +832,6 @@
                 }
             }, 1000);
         }
-
-
         function createWaitPopup() {
             const template = document.querySelector('.wait-popup-template');
             const templatePopup = template.querySelector('.popup-content');
@@ -916,8 +878,6 @@
                 }
             }, 1000);
         }
-
-
         function closePopup(popup) {
             popup.style.opacity = '0';
             popup.style.transform = 'translateY(20px)';
@@ -927,8 +887,6 @@
                 }
             }, 300);
         }
-
-
         function startWaitPopups() {
             waitPopupTimer = setInterval(() => {
                 if (musicPreloaded) {
@@ -938,8 +896,6 @@
                 if (!isWaitPopupShowing) createWaitPopup();
             }, 8000);
         }
-
-
         blessingBtn.addEventListener('click', function() {
             if (blessingBtn.disabled) return;
             blessingBtn.disabled = true;
