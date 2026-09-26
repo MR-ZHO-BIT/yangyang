@@ -581,32 +581,6 @@
         let playMonitorTimer = null;
         let isAudioWaiting = false;
 
-        //重置进度整套状态函数（切后台回来重新初始化进度）
-        function resetPageProgressState(){
-            if(smoothProgressTimer) clearInterval(smoothProgressTimer);
-            if(audioTimeoutTimer) clearTimeout(audioTimeoutTimer);
-            if(interval) clearInterval(interval);
-            if(waitPopupTimer) clearInterval(waitPopupTimer);
-            if(playMonitorTimer) clearInterval(playMonitorTimer);
-
-            currentPercent = 0;
-            musicPreloaded = false;
-            isBurstAnimated = false;
-            blessingBtn.disabled = true;
-            blessingBtn.textContent = "准备中（0）";
-            progressFill.style.width = "0%";
-            progressHeart.style.left = "0%";
-            bgMusic.pause();
-            musicPlayed = false;
-            remainingMessages = [...messages];
-            initAudioLoad();
-            startWaitPopups();
-            startSmoothProgress();
-            audioTimeoutTimer = setTimeout(() => {
-                forceCompleteLoad();
-            }, 6000);
-        }
-
         window.addEventListener('load', function() {
             initAudioLoad();
             startWaitPopups();
@@ -623,19 +597,21 @@
                 if(waitPopupTimer) clearInterval(waitPopupTimer);
             });
         });
-
+        //【修复后台切页逻辑】页面隐藏暂停；切回只恢复播放，禁止重置进度和祝福任务
         function handleVisibilityChange() {
             if(document.hidden){
-                //页面隐藏离开，暂停音乐
-                if(musicPlayed){
+                if(musicPlayed && !bgMusic.paused){
                     bgMusic.pause();
                 }
             }else{
-                //重新切回页面，直接重置全部进度，重新跑！
-                resetPageProgressState();
+                if(musicPlayed && bgMusic.paused){
+                    bgMusic.play().catch(()=>{});
+                    if(audioCtx && audioCtx.state === 'suspended'){
+                        audioCtx.resume();
+                    }
+                }
             }
         }
-
         function startSmoothProgress() {
             smoothProgressTimer = setInterval(() => {
                 if (musicPreloaded || currentPercent >= 100) {
