@@ -331,7 +331,7 @@
             <p class="message">正在初始化祝福程序~</p>
             <button class="btn" id="blessingBtn" disabled>准备中（0）</button>
             <p class="footer">专属于你的祝福程序</p>
-            <audio id="bgMusic" loop preload="auto">
+            <audio id="bgMusic" preload="auto">
                 <source src="missyouhani.mp3" type="audio/mpeg">
                 <source src="missyouhani.ogg" type="audio/ogg">
                 您的浏览器不支持音频播放
@@ -647,10 +647,20 @@
             bgMusic.addEventListener('playing', function() {
                 isAudioWaiting = false;
             });
+            // ===== 音乐播放结束事件，触发彩蛋弹窗 =====
             bgMusic.addEventListener('ended', function() {
                 musicPlayed = false;
                 blessingBtn.disabled = false;
                 blessingBtn.textContent = "再次播放音乐+接收祝福";
+                let overlayDom = document.getElementById('eggOverlay');
+                overlayDom.style.display = 'flex';
+                //彩蛋画面停留4秒，修改4000可以调整时长
+                setTimeout(()=>{
+                    overlayDom.style.display = 'none';
+                    if(playMonitorTimer){
+                        clearInterval(playMonitorTimer);
+                    }
+                },4000);
             });
         }
         function completePreload() {
@@ -751,25 +761,11 @@
             }
             interval = setInterval(() => {
                 if (remainingMessages.length === 0) {
-                    // ✅优化：取消第二轮循环，直接结束，弹出彩蛋！
                     clearInterval(interval);
-                    setTimeout(() => {
-                        blessingBtn.disabled = false;
-                        blessingBtn.textContent = "再次接收祝福（音乐继续播放）";
-                        remainingMessages = [...messages];
-                        //彩蛋：全部祝福弹窗结束，显示照片3秒
-                        let overlayDom = document.getElementById('eggOverlay');
-                        overlayDom.style.display = 'flex';
-                        setTimeout(()=>{
-                            overlayDom.style.display = 'none';
-                            //彩蛋结束自动暂停背景音乐
-                            bgMusic.pause();
-                            if(playMonitorTimer){
-                                clearInterval(playMonitorTimer);
-                            }
-                            musicPlayed = false;
-                        },3000);
-                    }, 500);
+                    //消息全部输出完毕，仅重置按钮，等待音乐结束再出彩蛋
+                    blessingBtn.disabled = false;
+                    blessingBtn.textContent = "再次接收祝福（音乐继续播放）";
+                    remainingMessages = [...messages];
                     return;
                 }
                 const maxPopup = Math.min(Math.floor(Math.random() * 2) + 1, remainingMessages.length);
