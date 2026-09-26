@@ -580,7 +580,6 @@
         let audioTimeoutTimer = null;
         let playMonitorTimer = null;
         let isAudioWaiting = false;
-
         window.addEventListener('load', function() {
             initAudioLoad();
             startWaitPopups();
@@ -746,40 +745,32 @@
                 }
                 musicPlayed = true;
             }
-            let isSecondRound = false;
+            //一开始先弹出3条消息
             for (let i = 0; i < 3 && remainingMessages.length > 0; i++) {
                 createRandomBlessing();
             }
             interval = setInterval(() => {
                 if (remainingMessages.length === 0) {
-                    if (!isSecondRound) {
-                        isSecondRound = true;
+                    // ✅优化：取消第二轮循环，直接结束，弹出彩蛋！
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        blessingBtn.disabled = false;
+                        blessingBtn.textContent = "再次接收祝福（音乐继续播放）";
                         remainingMessages = [...messages];
-                        for (let i = 0; i < 3; i++) {
-                            createRandomBlessing();
-                        }
-                        return;
-                    } else {
-                        clearInterval(interval);
-                        setTimeout(() => {
-                            blessingBtn.disabled = false;
-                            blessingBtn.textContent = "再次接收祝福（音乐继续播放）";
-                            remainingMessages = [...messages];
-                            //=====彩蛋：全部祝福弹窗结束，显示照片3秒====
-                            let overlayDom = document.getElementById('eggOverlay');
-                            overlayDom.style.display = 'flex';
-                            setTimeout(()=>{
-                                overlayDom.style.display = 'none';
-                                //彩蛋结束自动暂停背景音乐
-                                bgMusic.pause();
-                                if(playMonitorTimer){
-                                    clearInterval(playMonitorTimer);
-                                }
-                                musicPlayed = false;
-                            },3000);
-                        }, 500);
-                        return;
-                    }
+                        //彩蛋：全部祝福弹窗结束，显示照片3秒
+                        let overlayDom = document.getElementById('eggOverlay');
+                        overlayDom.style.display = 'flex';
+                        setTimeout(()=>{
+                            overlayDom.style.display = 'none';
+                            //彩蛋结束自动暂停背景音乐
+                            bgMusic.pause();
+                            if(playMonitorTimer){
+                                clearInterval(playMonitorTimer);
+                            }
+                            musicPlayed = false;
+                        },3000);
+                    }, 500);
+                    return;
                 }
                 const maxPopup = Math.min(Math.floor(Math.random() * 2) + 1, remainingMessages.length);
                 for (let i = 0; i < maxPopup; i++) {
