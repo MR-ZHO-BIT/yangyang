@@ -91,16 +91,13 @@
             opacity: 0.6;
             animation: ringFloat 4.2s ease-in-out infinite;
         }
-        .ring-1 { top: -4px; left: 50%; transform: translateX(-50%); animation-delay: 0s; }
         .ring-2 { top: 14%; right: -18px; animation-delay: 0.4s; }
         .ring-3 { top: 38%; right: -24px; animation-delay: 0.8s; }
         .ring-4 { bottom: 30%; right: -18px; animation-delay: 1.2s; }
-        .ring-5 { bottom: 4px; left: 50%; transform: translateX(-50%); animation-delay: 1.6s; }
         .ring-6 { bottom: 30%; left: -18px; animation-delay: 2s; }
         .ring-7 { top: 38%; left: -24px; animation-delay: 2.4s; }
         .ring-8 { top: 14%; left: -18px; animation-delay: 2.8s; }
-        .ring-9 { top: 8%; left: 34%; animation-delay: 3.2s; }
-        .ring-10 { bottom: 8%; right: 34%; animation-delay: 3.6s; }
+
         @keyframes ringFloat {
             0%, 100% {
                 transform: translateY(0) scale(1);
@@ -216,6 +213,13 @@
             cursor: pointer;
             margin-top: 15px;
         }
+        .popup-countdown {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            color: #888;
+            font-size: 12px;
+        }
         .decoration {
             position: absolute;
             font-size: 24px;
@@ -296,10 +300,10 @@
 <body>
     <div class="container">
         <div class="heart-bg">
-            🌸🐱🌼🐰🌷🦋💐🐿️🌸🦊
+            🌸🐱🌼🐏🌷🦋💐🐿️🌸🦊
             🌷🐶💐🦋🌼🐇🌸🐱🌷🐿️
-            🐰🌼💐🦊🌸🐶🌷🐇🦋🌼
-            💐🐱🌷🐿️🦋🌸🐰🌼🐇🌷
+            🐏🌼💐🦊🌸🐶🌷🐇🦋🌼
+            💐🐱🌷🐿️🦋🌸🐏🌼🐇🌷
         </div>
         <div class="content">
             <h1>给洋洋的小祝福 🌸</h1>
@@ -324,7 +328,7 @@
             <p class="message">正在初始化祝福程序~</p>
             <button class="btn" id="blessingBtn" disabled>准备中（0）</button>
             <p class="footer">专属于你的祝福程序</p>
-            <audio id="bgMusic" preload="auto">
+            <audio id="bgMusic" loop preload="auto">
                 <source src="missyouhani.mp3" type="audio/mpeg">
                 <source src="missyouhani.ogg" type="audio/ogg">
                 您的浏览器不支持音频播放
@@ -340,6 +344,7 @@
             <div class="popup-title">✨想对洋洋说的悄悄话 ✨</div>
             <div class="popup-message"></div>
             <button class="popup-close">🌸 关闭</button>
+            <div class="popup-countdown">⏳ 10秒后关闭</div>
         </div>
     </div>
     <div class="wait-popup-template" style="display: none;">
@@ -348,6 +353,7 @@
             <div class="popup-title">稍等一下下~</div>
             <div class="popup-message"></div>
             <button class="popup-close">知道啦~</button>
+            <div class="popup-countdown">⏳ 4秒后自动关闭</div>
         </div>
     </div>
     <!--彩蛋图片弹窗，引用外部egg.jpg-->
@@ -492,18 +498,18 @@
             "希望你不要总委屈自己，该对自己好一点💰",
             "赚钱也很辛苦，愿你善待自己🧧",
             "坐车外出一路平安，遇到别的车辆强行加塞，一定要多多当心，尤其是坐叶克彩的车，更要小心了🚗",
-			"你本身就十分温柔，格外珍贵",
+	    "你本身就十分温柔，格外珍贵",
             "坐车的时候别太累犯困，好好留意路况，你的出行平安我会记挂在心上✨",
             "心里和身体都觉得疲惫时，找个安静的环境好好睡一觉，好好放空自己🛏️",
             "感觉难受就好好休整，千万不要什么事情都硬扛着😔",
             "不用什么人情都往自己身上揽，好好守护自己的感受最重要🤍",
-			"上次偷偷叫我小屁孩，可是被我发现了喔😆",
+	    "上次偷偷叫我小屁孩，可是被我发现了喔😆",
             "该做好的事尽力就好，不必过度在意旁人的好话与评价🙏",
             "有些烦恼不必到处诉说，人心复杂，好好保护自己的情绪就好🤫",
             "面对各种机会放平心态，得到是幸运，落空也不必反复内耗自己😊",
             "答应别人的事量力而行，不必为了顾及他人勉强自己📝",
             "心事太多就多停下来复盘梳理，不要一个人反复钻牛角尖💭",
-			"只要你出现，就让人觉得踏实",
+	    "只要你出现，就让人觉得踏实",
             "你不用急着解释，我愿意相信你",
             "以后有烦心事，我可以做你的听众一起扛",
             "很多事情强求不来，顺其自然，放过自己就很好🍃",
@@ -513,13 +519,13 @@
             "累了就睡个好觉，让疲惫的身心得到好好缓解😴",
             "与人相处守住自己的分寸，优先保护好自己的情绪💛",
             "有机会可以努力争取，但也要接受事与愿违，不必苛责自己🌟",
-			"你的笑容特别有感染力，可以温暖身边所有人",
+	    "你的笑容特别有感染力，可以温暖身边所有人",
             "你心思细腻容易多想，很多事不必放在心底反复琢磨🤍",
             "吃了就是睡，睡了就是玩，玩了就是笑🌸",
             "记得多心疼你自己，不要总是活得太累太紧绷🍀",
-			"我愿意静静倾听，多久都没关系",
-			"你从来都不是麻烦，是我很在意的姐姐",
-			"心里积攒了烦心事别一个人憋着，难受可以说出来，不要独自消化所有负面情绪☁️",
+	    "我愿意静静倾听，多久都没关系",
+	    "你从来都不是麻烦，是我很在意的姐姐",
+	    "心里积攒了烦心事别一个人憋着，难受可以说出来，不要独自消化所有负面情绪☁️",
             "你本就多愁善感，不要把所有人的情绪都扛在自己肩上，你也可以轻松一点🍂"
         ];
         const colors = [
@@ -575,9 +581,10 @@
             initAudioLoad();
             startWaitPopups();
             startSmoothProgress();
+            //====修复！把兜底超时改成12000毫秒，12秒，给等待弹窗留出8秒弹出机会====
             audioTimeoutTimer = setTimeout(() => {
                 forceCompleteLoad();
-            }, 6000);
+            }, 12000);
             document.addEventListener('visibilitychange', handleVisibilityChange);
             window.addEventListener('beforeunload', function() {
                 if (playMonitorTimer) clearInterval(playMonitorTimer);
@@ -587,21 +594,6 @@
                 if(waitPopupTimer) clearInterval(waitPopupTimer);
             });
         });
-        //【修复后台切页逻辑】页面隐藏暂停；切回只恢复播放，禁止重置进度和祝福任务
-        function handleVisibilityChange() {
-            if(document.hidden){
-                if(musicPlayed && !bgMusic.paused){
-                    bgMusic.pause();
-                }
-            }else{
-                if(musicPlayed && bgMusic.paused){
-                    bgMusic.play().catch(()=>{});
-                    if(audioCtx && audioCtx.state === 'suspended'){
-                        audioCtx.resume();
-                    }
-                }
-            }
-        }
         function startSmoothProgress() {
             smoothProgressTimer = setInterval(() => {
                 if (musicPreloaded || currentPercent >= 100) {
@@ -618,14 +610,12 @@
             }, 50);
         }
         function initAudioLoad() {
-            bgMusic.removeEventListener('canplaythrough', onCanPlayHandler);
-            function onCanPlayHandler(){
+            bgMusic.addEventListener('canplaythrough', function onCanPlay() {
                 clearTimeout(audioTimeoutTimer);
                 musicPreloaded = true;
                 completePreload();
-                bgMusic.removeEventListener('canplaythrough', onCanPlayHandler);
-            }
-            bgMusic.addEventListener('canplaythrough', onCanPlayHandler);
+                bgMusic.removeEventListener('canplaythrough', onCanPlay);
+            });
             bgMusic.addEventListener('error', function() {
                 clearTimeout(audioTimeoutTimer);
                 musicPreloaded = true;
@@ -638,20 +628,10 @@
             bgMusic.addEventListener('playing', function() {
                 isAudioWaiting = false;
             });
-            // ===== 音乐播放结束事件，触发彩蛋弹窗 =====
             bgMusic.addEventListener('ended', function() {
                 musicPlayed = false;
                 blessingBtn.disabled = false;
                 blessingBtn.textContent = "再次播放音乐+接收祝福";
-                let overlayDom = document.getElementById('eggOverlay');
-                overlayDom.style.display = 'flex';
-                //彩蛋画面停留4秒
-                setTimeout(()=>{
-                    overlayDom.style.display = 'none';
-                    if(playMonitorTimer){
-                        clearInterval(playMonitorTimer);
-                    }
-                },4000);
             });
         }
         function completePreload() {
@@ -746,18 +726,34 @@
                 }
                 musicPlayed = true;
             }
-            //一开始先弹出3条消息
+            let isSecondRound = false;
             for (let i = 0; i < 3 && remainingMessages.length > 0; i++) {
                 createRandomBlessing();
             }
             interval = setInterval(() => {
                 if (remainingMessages.length === 0) {
-                    clearInterval(interval);
-                    //消息全部输出完毕，仅重置按钮，等待音乐结束再出彩蛋
-                    blessingBtn.disabled = false;
-                    blessingBtn.textContent = "再次接收祝福（音乐继续播放）";
-                    remainingMessages = [...messages];
-                    return;
+                    if (!isSecondRound) {
+                        isSecondRound = true;
+                        remainingMessages = [...messages];
+                        for (let i = 0; i < 3; i++) {
+                            createRandomBlessing();
+                        }
+                        return;
+                    } else {
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            blessingBtn.disabled = false;
+                            blessingBtn.textContent = "再次接收祝福（音乐继续播放）";
+                            remainingMessages = [...messages];
+                            //=====彩蛋：全部祝福弹窗结束，显示照片3秒====
+                            let overlayDom = document.getElementById('eggOverlay');
+                            overlayDom.style.display = 'flex';
+                            setTimeout(()=>{
+                                overlayDom.style.display = 'none';
+                            },3000);
+                        }, 500);
+                        return;
+                    }
                 }
                 const maxPopup = Math.min(Math.floor(Math.random() * 2) + 1, remainingMessages.length);
                 for (let i = 0; i < maxPopup; i++) {
@@ -781,6 +777,11 @@
             playMonitorTimer = setInterval(() => {
                 if (bgMusic.volume === 0) bgMusic.volume = 1;
             }, 1000);
+        }
+        function handleVisibilityChange() {
+            if (musicPlayed && !document.hidden && bgMusic.paused && !bgMusic.ended && !isAudioWaiting) {
+                bgMusic.play().catch(()=>{});
+            }
         }
         function createRandomBlessing() {
             if (remainingMessages.length === 0) return;
@@ -812,6 +813,16 @@
             closeBtn.addEventListener('click', () => {
                 closePopup(popup);
             });
+            let remainingTime = 8;
+            const countdown = popup.querySelector('.popup-countdown');
+            const countdownTimer = setInterval(() => {
+                remainingTime--;
+                countdown.textContent = `⏳ ${remainingTime}秒后关闭`;
+                if (remainingTime <= 0) {
+                    clearInterval(countdownTimer);
+                    closePopup(popup);
+                }
+            }, 1000);
         }
         function createWaitPopup() {
             const template = document.querySelector('.wait-popup-template');
@@ -847,6 +858,17 @@
                 isWaitPopupShowing = false;
                 closePopup(popup);
             });
+            let remainingTime = 3;
+            const countdown = popup.querySelector('.popup-countdown');
+            const countdownTimer = setInterval(() => {
+                remainingTime--;
+                countdown.textContent = `⏳ ${remainingTime}秒后自动关闭`;
+                if (remainingTime <= 0 || musicPreloaded) {
+                    clearInterval(countdownTimer);
+                    isWaitPopupShowing = false;
+                    closePopup(popup);
+                }
+            }, 1000);
         }
         function closePopup(popup) {
             popup.style.opacity = '0';
