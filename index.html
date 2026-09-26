@@ -54,6 +54,7 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
+            transition: opacity 0.6s ease;
         }
         h1 {
             color: #ff7878;
@@ -377,6 +378,8 @@
         let spectrumData = null;
         let beatScale = 1.0;
         const smoothFactor = 0.08;
+        //运行状态锁，防止重复点击多次启动
+        let isRunning = false;
         //外圈小花环更新缩放函数
         function updateRingScale(scaleVal){
             const icons = document.querySelectorAll('.ring-icon');
@@ -496,6 +499,21 @@
             sourceNode.connect(analyser);
             analyser.connect(audioCtx.destination);
         }
+        //音量淡出停止音乐函数
+        function fadeOutAudio(audio){
+            let vol = audio.volume;
+            const timer = setInterval(()=>{
+                vol -=0.025;
+                if(vol <=0.01){
+                    clearInterval(timer);
+                    audio.pause();
+                    audio.currentTime = 0;
+                    audio.volume =1;
+                }else{
+                    audio.volume = vol;
+                }
+            },120);
+        }
         // ============【花朵绘制结束；下面保留原有整套祝福业务逻辑】============
         const messages = [
             "希望你不要总委屈自己，该对自己好一点💰",
@@ -567,6 +585,7 @@
         const progressFill = document.getElementById('progressFill');
         const progressHeart = document.getElementById('progressHeart');
         const progressBar = document.querySelector('.progress-bar');
+        const contentWrap = document.querySelector('.content');
         let interval = null;
         let musicPlayed = false;
         let remainingMessages = [...messages];
@@ -580,7 +599,6 @@
         let audioTimeoutTimer = null;
         let playMonitorTimer = null;
         let isAudioWaiting = false;
-
         //重置进度整套状态函数（切后台回来重新初始化进度）
         function resetPageProgressState(){
             if(smoothProgressTimer) clearInterval(smoothProgressTimer);
@@ -588,7 +606,6 @@
             if(interval) clearInterval(interval);
             if(waitPopupTimer) clearInterval(waitPopupTimer);
             if(playMonitorTimer) clearInterval(playMonitorTimer);
-
             currentPercent = 0;
             musicPreloaded = false;
             isBurstAnimated = false;
@@ -597,8 +614,12 @@
             progressFill.style.width = "0%";
             progressHeart.style.left = "0%";
             bgMusic.pause();
+            bgMusic.volume =1;
             musicPlayed = false;
+            isRunning = false;
             remainingMessages = [...messages];
+            contentWrap.style.opacity = "1";
+            contentWrap.style.pointerEvents = "auto";
             initAudioLoad();
             startWaitPopups();
             startSmoothProgress();
@@ -606,7 +627,6 @@
                 forceCompleteLoad();
             }, 6000);
         }
-
         window.addEventListener('load', function() {
             initAudioLoad();
             startWaitPopups();
@@ -623,7 +643,6 @@
                 if(waitPopupTimer) clearInterval(waitPopupTimer);
             });
         });
-
         function handleVisibilityChange() {
             if(document.hidden){
                 //页面隐藏离开，暂停音乐
@@ -635,7 +654,6 @@
                 resetPageProgressState();
             }
         }
-
         function startSmoothProgress() {
             smoothProgressTimer = setInterval(() => {
                 if (musicPreloaded || currentPercent >= 100) {
@@ -759,6 +777,12 @@
             }, (randomDelay + randomDuration) * 1000);
         }
         function startBlessings() {
+            if(isRunning) return;
+            isRunning = true;
+            // ✨点击启动祝福之后，把整个初始界面慢慢淡出隐藏，解决按钮还显示的bug
+            contentWrap.style.opacity = "0";
+            contentWrap.style.pointerEvents = "none";
+
             if (!musicPlayed) {
                 if (bgMusic.readyState >= 2) {
                     startAudioPlay();
@@ -786,20 +810,18 @@
                     } else {
                         clearInterval(interval);
                         setTimeout(() => {
-                            blessingBtn.disabled = false;
-                            blessingBtn.textContent = "再次接收祝福（音乐继续播放）";
-                            remainingMessages = [...messages];
                             //=====彩蛋：全部祝福弹窗结束，显示照片3秒====
                             let overlayDom = document.getElementById('eggOverlay');
                             overlayDom.style.display = 'flex';
                             setTimeout(()=>{
                                 overlayDom.style.display = 'none';
-                                //彩蛋结束自动暂停背景音乐
-                                bgMusic.pause();
+                                //彩蛋结束之后，音量慢慢淡出停止背景音乐，不是直接暂停！
+                                fadeOutAudio(bgMusic);
                                 if(playMonitorTimer){
                                     clearInterval(playMonitorTimer);
                                 }
                                 musicPlayed = false;
+                                isRunning = false;
                             },3000);
                         }, 500);
                         return;
@@ -823,6 +845,9 @@
                 blessingBtn.disabled = false;
                 blessingBtn.textContent = "点击接收祝福+播放音乐";
                 musicPlayed = false;
+                isRunning = false;
+                contentWrap.style.opacity="1";
+                contentWrap.style.pointerEvents="auto";
             });
             playMonitorTimer = setInterval(() => {
                 if (bgMusic.volume === 0) bgMusic.volume = 1;
