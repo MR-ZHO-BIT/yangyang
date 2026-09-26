@@ -216,13 +216,6 @@
             cursor: pointer;
             margin-top: 15px;
         }
-        .popup-countdown {
-            position: absolute;
-            bottom: 10px;
-            right: 15px;
-            color: #888;
-            font-size: 12px;
-        }
         .decoration {
             position: absolute;
             font-size: 24px;
@@ -347,7 +340,6 @@
             <div class="popup-title">✨想对洋洋说的悄悄话 ✨</div>
             <div class="popup-message"></div>
             <button class="popup-close">🌸 关闭</button>
-            <div class="popup-countdown">⏳ 10秒后关闭</div>
         </div>
     </div>
     <div class="wait-popup-template" style="display: none;">
@@ -356,7 +348,6 @@
             <div class="popup-title">稍等一下下~</div>
             <div class="popup-message"></div>
             <button class="popup-close">知道啦~</button>
-            <div class="popup-countdown">⏳ 4秒后自动关闭</div>
         </div>
     </div>
     <!--彩蛋图片弹窗，引用外部egg.jpg-->
@@ -654,7 +645,7 @@
                 blessingBtn.textContent = "再次播放音乐+接收祝福";
                 let overlayDom = document.getElementById('eggOverlay');
                 overlayDom.style.display = 'flex';
-                //彩蛋画面停留4秒，修改4000可以调整时长
+                //彩蛋画面停留4秒
                 setTimeout(()=>{
                     overlayDom.style.display = 'none';
                     if(playMonitorTimer){
@@ -821,16 +812,6 @@
             closeBtn.addEventListener('click', () => {
                 closePopup(popup);
             });
-            let remainingTime = 8;
-            const countdown = popup.querySelector('.popup-countdown');
-            const countdownTimer = setInterval(() => {
-                remainingTime--;
-                countdown.textContent = `⏳ ${remainingTime}秒后关闭`;
-                if (remainingTime <= 0) {
-                    clearInterval(countdownTimer);
-                    closePopup(popup);
-                }
-            }, 1000);
         }
         function createWaitPopup() {
             const template = document.querySelector('.wait-popup-template');
@@ -866,17 +847,6 @@
                 isWaitPopupShowing = false;
                 closePopup(popup);
             });
-            let remainingTime = 3;
-            const countdown = popup.querySelector('.popup-countdown');
-            const countdownTimer = setInterval(() => {
-                remainingTime--;
-                countdown.textContent = `⏳ ${remainingTime}秒后自动关闭`;
-                if (remainingTime <= 0 || musicPreloaded) {
-                    clearInterval(countdownTimer);
-                    isWaitPopupShowing = false;
-                    closePopup(popup);
-                }
-            }, 1000);
         }
         function closePopup(popup) {
             popup.style.opacity = '0';
