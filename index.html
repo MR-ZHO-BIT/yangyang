@@ -320,7 +320,7 @@
                     <span class="ring-icon ring-3">🦋</span>
                     <span class="ring-icon ring-4">🍡</span>
                     <span class="ring-icon ring-6">🎀</span>
-                    <span class="ring-icon ring-7">🐰</span>
+                    <span class="ring-icon ring-7">🐐</span>
                     <span class="ring-icon ring-8">⭐</span>
                 </div>
             </div>
@@ -343,7 +343,7 @@
             <div class="decoration" style="top: 10px; left: 15px;">🌸</div>
             <div class="decoration" style="top: 15px; right: 20px;">🌼</div>
             <div class="decoration" style="bottom: 40px; left: 20px;">🦋</div>
-            <div class="decoration" style="bottom: 35px; right: 15px;">🐰</div>
+            <div class="decoration" style="bottom: 35px; right: 15px;">🐐</div>
             <div class="popup-title">✨想对洋洋说的悄悄话 ✨</div>
             <div class="popup-message"></div>
             <button class="popup-close">🌸 关闭</button>
@@ -560,8 +560,8 @@
             "正在把悄悄话加热到37℃（温柔适配）～ 适配洋洋小盆友的胃口，马上好🌡️",
             "洋盆友别急！我要检查有没有漏了暖心话，如果不够贴心就要返工，再等亿秒就好🍯"
         ];
-        const floatEmojisPool = ["🌸","🌼","🐱","🐰","🌷","🦋","💐","🐿️","🐶","🦊","🐇","🌺"];
-        const burstEmojisPool = ["🌸","🐰","🌷","🦋","🌼"];
+        const floatEmojisPool = ["🌸","🌼","🐱","🐐","🌷","🦋","💐","🐿️","🐶","🦊","🐇","🌺"];
+        const burstEmojisPool = ["🌸","🐐","🌷","🦋","🌼"];
         const blessingBtn = document.getElementById('blessingBtn');
         const bgMusic = document.getElementById('bgMusic');
         const progressFill = document.getElementById('progressFill');
@@ -580,6 +580,33 @@
         let audioTimeoutTimer = null;
         let playMonitorTimer = null;
         let isAudioWaiting = false;
+
+        //重置进度整套状态函数（切后台回来重新初始化进度）
+        function resetPageProgressState(){
+            if(smoothProgressTimer) clearInterval(smoothProgressTimer);
+            if(audioTimeoutTimer) clearTimeout(audioTimeoutTimer);
+            if(interval) clearInterval(interval);
+            if(waitPopupTimer) clearInterval(waitPopupTimer);
+            if(playMonitorTimer) clearInterval(playMonitorTimer);
+
+            currentPercent = 0;
+            musicPreloaded = false;
+            isBurstAnimated = false;
+            blessingBtn.disabled = true;
+            blessingBtn.textContent = "准备中（0）";
+            progressFill.style.width = "0%";
+            progressHeart.style.left = "0%";
+            bgMusic.pause();
+            musicPlayed = false;
+            remainingMessages = [...messages];
+            initAudioLoad();
+            startWaitPopups();
+            startSmoothProgress();
+            audioTimeoutTimer = setTimeout(() => {
+                forceCompleteLoad();
+            }, 6000);
+        }
+
         window.addEventListener('load', function() {
             initAudioLoad();
             startWaitPopups();
@@ -596,6 +623,19 @@
                 if(waitPopupTimer) clearInterval(waitPopupTimer);
             });
         });
+
+        function handleVisibilityChange() {
+            if(document.hidden){
+                //页面隐藏离开，暂停音乐
+                if(musicPlayed){
+                    bgMusic.pause();
+                }
+            }else{
+                //重新切回页面，直接重置全部进度，重新跑！
+                resetPageProgressState();
+            }
+        }
+
         function startSmoothProgress() {
             smoothProgressTimer = setInterval(() => {
                 if (musicPreloaded || currentPercent >= 100) {
@@ -612,12 +652,14 @@
             }, 50);
         }
         function initAudioLoad() {
-            bgMusic.addEventListener('canplaythrough', function onCanPlay() {
+            bgMusic.removeEventListener('canplaythrough', onCanPlayHandler);
+            function onCanPlayHandler(){
                 clearTimeout(audioTimeoutTimer);
                 musicPreloaded = true;
                 completePreload();
-                bgMusic.removeEventListener('canplaythrough', onCanPlay);
-            });
+                bgMusic.removeEventListener('canplaythrough', onCanPlayHandler);
+            }
+            bgMusic.addEventListener('canplaythrough', onCanPlayHandler);
             bgMusic.addEventListener('error', function() {
                 clearTimeout(audioTimeoutTimer);
                 musicPreloaded = true;
@@ -785,11 +827,6 @@
             playMonitorTimer = setInterval(() => {
                 if (bgMusic.volume === 0) bgMusic.volume = 1;
             }, 1000);
-        }
-        function handleVisibilityChange() {
-            if (musicPlayed && !document.hidden && bgMusic.paused && !bgMusic.ended && !isAudioWaiting) {
-                bgMusic.play().catch(()=>{});
-            }
         }
         function createRandomBlessing() {
             if (remainingMessages.length === 0) return;
